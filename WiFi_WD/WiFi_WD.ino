@@ -3,7 +3,7 @@
 #include <ESP8266WiFi.h>
 #include <DHT.h>
 #include <WiFiClientSecure.h>
-#include <ESP8266Ping.h>
+//#include <ESP8266Ping.h>
 
 // Replace with your network details
 const char* ssid = "Setochka";
@@ -119,7 +119,7 @@ void loop() {
 //  Serial.print("Read in ");
 //  Serial.println(digitalRead(D2));
 
-  Serial.print(digitalRead(D0));
+  Serial.print(" ");
   Serial.print(digitalRead(D1));
   Serial.print(digitalRead(D2));
   Serial.print(digitalRead(D3));
@@ -134,7 +134,7 @@ void loop() {
 //  Serial.println(digitalRead(D2));
 
 
-  Serial.print(digitalRead(D0));
+  Serial.print(" ");
   Serial.print(digitalRead(D1));
   Serial.print(digitalRead(D2));
   Serial.print(digitalRead(D3));
