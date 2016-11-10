@@ -3,17 +3,15 @@
 #include <ESP8266WiFi.h>
 #include <DHT.h>
 #include <WiFiClientSecure.h>
+#include <ESP8266Ping.h>
 
 // Replace with your network details
 const char* ssid = "Setochka";
 const char* password = "T+NPX^18";
 
-#define DHTPIN D4
-#define DHTTYPE DHT21   // DHT 21 (AM2301)
-
 //account artem.kryhin@gmail.com
-const char WEBSITE[] = "api.pushingbox.com"; //pushingbox API server
-const String devid = "vCBDA10F84968BAC"; //device ID from Pushingbox 
+//const char WEBSITE[] = "api.pushingbox.com"; //pushingbox API server
+//const String devid = "vCBDA10F84968BAC"; //device ID from Pushingbox 
 
 const int RED = 15;
 const int GREEN = 12;
@@ -22,7 +20,7 @@ const int BLUE = 13;
 const int http_port = 80;
 
 
-DHT dht(DHTPIN, DHTTYPE, 11);
+//DHT dht(DHTPIN, DHTTYPE, 11);
 
 float h;
 float t;
@@ -49,9 +47,10 @@ void setup() {
   Serial.begin(115200);
   delay(10);
    
-  dht.begin();
+//  dht.begin();
   
-  pinMode(A0, INPUT);
+  pinMode(D0, INPUT);
+  pinMode(D1, OUTPUT);
   
   // Connecting to WiFi network
   Serial.println();
@@ -78,63 +77,104 @@ void setup() {
   Serial.println(WiFi.localIP());
   analogWrite(RED, 0);
   analogWrite(GREEN, 100);
-
-  STAT_interval = 120000;
-  COM_interval = 1000;
-  counter_COM=0;
-  counter_STAT=STAT_interval-5;
-  posted=0;
-  
-
 }
 
-void getTemperature() {
-  float t;
-  float h;
-  int l;
-  do {
-     t = dht.readTemperature();
-     dtostrf(t, 3, 2, temp);
-     h = dht.readHumidity();
-     dtostrf(h, 3, 2, hum);
-     l=analogRead(A0);
-     dtostrf(l, 3, 2, light);
-     delay(100);
-   } while (t == 85.0 || t == (-127.0));
-}
+//int getPing(){}
+//  Serial.begin(115200);
+//  delay(10);
+//
+//  // We start by connecting to a WiFi network
+//
+//  Serial.println();
+//  Serial.println("Connecting to WiFi");
+//  
+//  WiFi.begin(ssid, password);
+//  
+//  while (WiFi.status() != WL_CONNECTED) {
+//    delay(100);
+//    Serial.print(".");
+//  }
+//
+//  Serial.println();
+//  Serial.print("WiFi connected with ip ");  
+//  Serial.println(WiFi.localIP());
+//
+//  Serial.print("Pinging ip ");
+//  Serial.println(remote_ip);
+//
+//  if(Ping.ping(remote_ip)) {
+//    Serial.println("Success!!");
+//  } else {
+//    Serial.println("Error :(");
+//  }
+//}
 
 void loop() {
   // Listenning for new clients
-  delay(1);
+
+  delay(2000);
+
+  digitalWrite(D1,HIGH);
+//  Serial.println("high level on D1");
+//  Serial.print("Read in ");
+//  Serial.println(digitalRead(D2));
+
+  Serial.print(digitalRead(D0));
+  Serial.print(digitalRead(D1));
+  Serial.print(digitalRead(D2));
+  Serial.print(digitalRead(D3));
+  Serial.print(digitalRead(D4));
+  Serial.print(digitalRead(D5));
+  Serial.println(digitalRead(D6));
+
+  delay(2000);
+//  Serial.println("low level on D1");
+  digitalWrite(D1,LOW);
+//  Serial.print("Read in ");
+//  Serial.println(digitalRead(D2));
+
+
+  Serial.print(digitalRead(D0));
+  Serial.print(digitalRead(D1));
+  Serial.print(digitalRead(D2));
+  Serial.print(digitalRead(D3));
+  Serial.print(digitalRead(D4));
+  Serial.print(digitalRead(D5));
+  Serial.println(digitalRead(D6));
+
+  
+
+
+  
   WiFiClient client = server.available();
 
-  counter_STAT = counter_STAT + 1;
-  if ( counter_STAT == STAT_interval ){
-    getTemperature();
-    WiFiClient cl;
-    if (cl.connect(WEBSITE, 80))
-      { 
-         cl.print("GET /pushingbox?devid=" + devid
-            + "&t=" + (String) temp
-            + "&h="      + (String) hum
-            + "&l="     + (String) light
-            + "&loc="      + (String) location
-         );
-
-      cl.println(" HTTP/1.1"); 
-      cl.print("Host: ");
-      cl.println(WEBSITE);
-      cl.println("User-Agent: ESP8266/1.0");
-      cl.println("Connection: close");
-      cl.println();
-
-          analogWrite(GREEN, 0); 
-          delay(300);
-          analogWrite(GREEN, 100);      
-      }
-      posted=posted + 1;
-      counter_STAT = 0;
-    }
+//  counter_STAT = counter_STAT + 1;
+//  if ( counter_STAT == STAT_interval ){
+//    getTemperature();
+//    WiFiClient cl;
+//    if (cl.connect(WEBSITE, 80))
+//      { 
+//         cl.print("GET /pushingbox?devid=" + devid
+//            + "&t=" + (String) temp
+//            + "&h="      + (String) hum
+//            + "&l="     + (String) light
+//            + "&loc="      + (String) location
+//         );
+//
+//      cl.println(" HTTP/1.1"); 
+//      cl.print("Host: ");
+//      cl.println(WEBSITE);
+//      cl.println("User-Agent: ESP8266/1.0");
+//      cl.println("Connection: close");
+//      cl.println();
+//
+//          analogWrite(GREEN, 0); 
+//          delay(300);
+//          analogWrite(GREEN, 100);      
+//      }
+//      posted=posted + 1;
+//      counter_STAT = 0;
+//    }
     
   if (client) {
     Serial.println("New client");
